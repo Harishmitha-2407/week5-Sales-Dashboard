@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- Week 5: Sales dashboard. Combines responsive layout (W1), interactive components (W2),
+     accessibility (W3) and performance practices (W4). Data: data/sales.json -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Sales Dashboard 2025</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to dashboard</a>
+  <header class="top">
+    <h1>Sales Dashboard <span id="year"></span></h1>
+    <button id="theme" class="btn ghost" type="button" aria-pressed="false">Dark mode</button>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <!-- Loading / error status: announced to screen readers -->
+    <p id="status" role="status" aria-live="polite">Loading data...</p>
+    <div id="error" role="alert" hidden>
+      <p><strong>Could not load the dashboard data.</strong> Check that <code>data/sales.json</code> exists and is valid JSON, then press Retry. For local testing you can also run <code>python -m http.server</code> in this folder.</p>
+      <button id="retry" class="btn" type="button">Retry</button>
+    </div>
+
+    <div id="app" hidden>
+      <!-- Filters -->
+      <form class="filters" aria-label="Dashboard filters" onsubmit="return false">
+        <div><label for="f-region">Region</label>
+          <select id="f-region"><option value="">All regions</option></select></div>
+        <div><label for="f-cat">Category</label>
+          <select id="f-cat"><option value="">All categories</option></select></div>
+        <div><label for="f-search">Search product</label>
+          <input id="f-search" type="search" autocomplete="off"></div>
+        <button id="reset" class="btn ghost" type="button">Reset filters</button>
+      </form>
+
+      <!-- KPI cards -->
+      <section aria-labelledby="kpi-h" class="kpis">
+        <h2 id="kpi-h" class="sr-only">Key figures</h2>
+        <div class="kpi"><p class="k-label">Total revenue</p><p class="k-val" id="k-rev">-</p></div>
+        <div class="kpi"><p class="k-label">Units sold</p><p class="k-val" id="k-units">-</p></div>
+        <div class="kpi"><p class="k-label">Orders</p><p class="k-val" id="k-orders">-</p></div>
+        <div class="kpi"><p class="k-label">Avg. order value</p><p class="k-val" id="k-aov">-</p></div>
+      </section>
+
+      <!-- Charts (inline SVG built with JS; a text summary is provided for screen readers) -->
+      <div class="charts">
+        <section class="panel" aria-labelledby="c1-h">
+          <h2 id="c1-h">Monthly revenue</h2>
+          <div id="chart-month" class="chart"></div>
+          <p id="chart-month-sum" class="sr-only"></p>
+        </section>
+        <section class="panel" aria-labelledby="c2-h">
+          <h2 id="c2-h">Revenue by category</h2>
+          <div id="chart-cat" class="chart"></div>
+          <p id="chart-cat-sum" class="sr-only"></p>
+        </section>
+      </div>
+
+      <!-- Sortable data table -->
+      <section class="panel" aria-labelledby="t-h">
+        <h2 id="t-h">Orders</h2>
+        <p id="count" class="muted" role="status" aria-live="polite"></p>
+        <div class="table-wrap" tabindex="0" role="region" aria-labelledby="t-h">
+          <table id="table">
+            <caption class="sr-only">Orders, sortable by column</caption>
+            <thead><tr>
+              <th scope="col" aria-sort="none"><button type="button" data-key="date">Date</button></th>
+              <th scope="col" aria-sort="none"><button type="button" data-key="region">Region</button></th>
+              <th scope="col" aria-sort="none"><button type="button" data-key="category">Category</button></th>
+              <th scope="col" aria-sort="none"><button type="button" data-key="product">Product</button></th>
+              <th scope="col" aria-sort="none" class="num"><button type="button" data-key="units">Units</button></th>
+              <th scope="col" aria-sort="none" class="num"><button type="button" data-key="revenue">Revenue</button></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <nav class="pager" aria-label="Table pages">
+          <button id="prev" class="btn ghost" type="button">Previous</button>
+          <span id="page-info" aria-live="polite"></span>
+          <button id="next" class="btn ghost" type="button">Next</button>
+        </nav>
+      </section>
+    </div>
+  </main>
+  <footer class="foot"><p>Static demo data from <code>data/sales.json</code>.</p></footer>
+</body>
+</html>
